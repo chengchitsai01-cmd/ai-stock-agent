@@ -1,36 +1,44 @@
-name: Daily AI Stock Report
+name: Daily AI Stock Agent
 
-# 設定觸發時間
+# 1. 設定觸發時間
 on:
   schedule:
-    # 這裡的時間是 UTC 時間！
-    # 台灣時間早上 08:30 = UTC 時間 00:30
-    - cron: '30 0 * * *'
-  # 讓我們也可以手動按按鈕測試
+    # 注意：GitHub 是用 "UTC 時間"
+    # 台灣時間 08:30 = UTC 時間 00:30 (台灣快 8 小時)
+    # 格式是：'分 時 日 月 週'
+    - cron: '30 0 * * *' 
+  
+  # 讓我們可以手動按按鈕測試 (Workflow Dispatch)
   workflow_dispatch:
 
 jobs:
-  build:
+  run-stock-agent:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 下載程式碼 (Checkout code)
+      # A. 下載你的程式碼到雲端電腦
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: 設定 Python 環境
+      # B. 設定 Python 環境 (使用 3.12 版本)
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.12'
 
-      - name: 安裝套件 (Install dependencies)
+      # C. 安裝套件 (根據你的 requirements.txt)
+      - name: Install dependencies
         run: |
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: 執行 AI 分析師 (Run Agent)
+      # D. 執行程式 (最關鍵的一步)
+      - name: Run AI Agent
         env:
-          # 把剛剛設定的 Secrets 傳入環境變數
+          # 把 GitHub Secrets 傳進去給 Python 用
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_PASSWORD: ${{ secrets.GMAIL_PASSWORD }}
           TO_EMAIL: ${{ secrets.TO_EMAIL }}
-        run: python invest.py
+        # ⚠️ 請確認這裡的檔名 gemini_agent.py 跟你的 Python 檔名一模一樣！
+        run: python gemini.py
