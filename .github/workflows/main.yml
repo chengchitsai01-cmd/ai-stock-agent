@@ -33,4 +33,4 @@ jobs:
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_PASSWORD: ${{ secrets.GMAIL_PASSWORD }}
           TO_EMAIL: ${{ secrets.TO_EMAIL }}
-        run: python gemini_agent.py
+        run: python invest.py
