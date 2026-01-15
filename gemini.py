@@ -18,7 +18,39 @@ TO_EMAIL = os.getenv("TO_EMAIL")
 # 【你的庫存】
 # 因為你是從 0 開始，這裡留空即可
 MY_PORTFOLIO = {} 
+import os
+import yfinance as yf
+import google.generativeai as genai
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+import pandas as pd
+import requests
 
+# ==========================================
+# 1. 設定區
+# ==========================================
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+GMAIL_USER = os.getenv("GMAIL_USER")
+GMAIL_PASSWORD = os.getenv("GMAIL_PASSWORD")
+TO_EMAIL = os.getenv("TO_EMAIL")
+
+# 【你的庫存】(目前是空手)
+MY_PORTFOLIO = {} 
+
+# 【股票代碼與名稱對照表】
+# 為了速度，我們直接建立對照表，不需每次聯網查詢
+STOCK_MAP = {
+    "2330.TW": "台積電", "2317.TW": "鴻海", "2454.TW": "聯發科", "2308.TW": "台達電",
+    "2303.TW": "聯電", "2881.TW": "富邦金", "2412.TW": "中華電", "2882.TW": "國泰金",
+    "2382.TW": "廣達", "2891.TW": "中信金", "2002.TW": "中鋼", "3711.TW": "日月光",
+    "2886.TW": "兆豐金", "2884.TW": "玉山金", "1216.TW": "統一", "2885.TW": "元大金",
+    "3008.TW": "大立光", "3045.TW": "台灣大", "5880.TW": "合庫金", "2357.TW": "華碩",
+    "2603.TW": "長榮", "2609.TW": "陽明", "2615.TW": "萬海", "3231.TW": "緯創",
+    "6669.TW": "緯穎", "2376.TW": "技嘉", "3035.TW": "智原", "3037.TW": "欣興",
+    "0050.TW": "元大台灣50", "006208.TW": "富邦台50", 
+    "00878.TW": "國泰永續高股息", "0056.TW": "元大高股息", "00929.TW": "復華台灣科技優息"
+}
 # 【掃描清單】
 # 既然要建倉，建議加入 ETF (0050, 006208) 作為核心配置
 # 這裡幫你把清單稍微豐富一點，加入穩健的 ETF
@@ -247,5 +279,6 @@ full_content = f"""
 <br><br>
 <small>(此報告由 AI 自動生成，僅供輔助參考，投資盈虧自負)</small>
 """
+
 
 send_email(subject, full_content)
